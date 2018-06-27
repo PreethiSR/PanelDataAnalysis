@@ -2,11 +2,9 @@
 title: "FinalMarketingAnalytics"
 author: "Austin, Swaroop, Amrita, Preethi"
 date: "March 15, 2018"
-output:
-  word_document: default
-  html_document: default
+output: html_document
 ---
-#Importing Data and packages
+# Importing Data and packages
 ```{r}
 rm(list=ls())
 knitr::opts_chunk$set(echo = TRUE)
@@ -22,7 +20,7 @@ DurData <- fread('DurData1_Final.csv')
 
 ```
 
-#Setting up Data for first question
+# Setting up Data for first question
 ```{r}
 Dur_Data=DurData[!duplicated(DurData),]
 
@@ -97,7 +95,7 @@ data_income=as.data.table(data_income)
 
 ```
 
-##Plots for Demographics
+# Plots for Demographics
 
 ```{r}
 
@@ -143,7 +141,7 @@ basisvars_n
 colMeans(data_income[,..basisvars_n])
 ```
 
-#Hierarchical Clustering
+# Hierarchical Clustering
 ```{r}
 d=dist(data_income[,..basisvars_n],method="euclidian")
 data_income[,.N]
@@ -157,7 +155,7 @@ answer =as.data.table(answer)
 ```
 
 
-#Elbow Method Plot
+# Elbow Method Plot
 ```{r }
 #Elbow Method
 mydata <- data_income
@@ -171,7 +169,7 @@ plot(1:15, wss, type="b", xlab="Number of Clusters",
 
 ```
 
-#K-Means
+# K-Means
 ```{r}
 km <- kmeans( data_income[, ..basisvars_n], 3)
 data_income[, seg := km$cluster]
@@ -184,7 +182,7 @@ a =data_income[, lapply(.SD,mean), seg, .SDcols = basisvars_n][order(seg)]
 print(t(a))
 ```
 
-#Segmentation - Demographic Variables
+# Segmentation - Demographic Variables
 
 ```{r} 
 names(data_income)
@@ -197,9 +195,9 @@ b=data_income[, lapply( .SD , mean) , .SDcols = data_demogvars, seg][order(seg)]
 print(t(b))
 ```
 
-#Qtn 2 How product returns affect future customer purchases?
+# Qtn 2 How product returns affect future customer purchases?
 
-#Code Used to generate a column for cummulative previous returns per household (not to be run - as new dataframe was exported and can be directly uploaded for use to save time)
+# Code Used to generate a column for cummulative previous returns per household (not to be run - as new dataframe was exported and can be directly uploaded for use to save time)
 
 ```{r}
 #DurData2<- fread('DurData1_Final.csv')
@@ -245,7 +243,7 @@ summary(logit2)
 ```
 
 
-#plot for Question 2
+# plot for Question 2
 ```{r}
 data_3_plot=sqldf("select Household_ID,max(prevreturn) as Previous_return from data3 group by Household_ID")
 
@@ -259,7 +257,7 @@ barplot(data_3_plot0$Previous_return, main="previous return", xlab="Prev_return"
 
 ```
 
-#Q3 Which products are most likely to be returned, so the store can make better purchasing decisions (in terms of what items they stock/sell)?
+# Q3 Which products are most likely to be returned, so the store can make better purchasing decisions (in terms of what items they stock/sell)?
 
 ```{r}
 #Setting up dataframe for this question
@@ -321,7 +319,7 @@ anova(negbin2, negbin1, test="Chisq")
 #Here the p-value is significant for the second model with the additional term hence we go ahead with the negbin2 model for Category Model 
 ```
 
-#Returns for PC HDWR Category
+# Returns for PC HDWR Category
 ```{r}
 data_PC_HDWR=sqldf("select Sub_Category_Description,Transaction_year,Transaction_month, sum(Quantity) as Total_Quant, avg(EXTENDED_PRICE) as Avg_Ext_Price, sum(Returned) as Total_Returned, sum(EXTENDED_PRICE) as Total_Ext_Price from DurData1 where Category_Description=='PC HDWR'group by Sub_Category_Description, Transaction_year, Transaction_month")
 
@@ -342,7 +340,7 @@ anova(negbin4, negbin3, test="Chisq")
 #Significant p-value means we go ahead with additional Seasonality model
 ```
 
-#Returns for Television Category
+# Returns for Television Category
 ```{r}
 data_TV=sqldf("select Sub_Category_Description,Transaction_year,Transaction_month, sum(Quantity) as Total_Quant, avg(EXTENDED_PRICE) as Avg_Ext_Price, sum(Returned) as Total_Returned, sum(EXTENDED_PRICE) as Total_Ext_Price from DurData1 where Category_Description=='TELEVISION' group by Sub_Category_Description, Transaction_year,Transaction_month")
 
@@ -368,7 +366,7 @@ anova(negbin6, negbin5, test="Chisq")
 ```
 
 
-###plots for Question 3
+# plots for Question 3
 
 ```{r}
 a=data.frame(count(Dur_Data$Transaction_month))
